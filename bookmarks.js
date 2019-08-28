@@ -1,4 +1,34 @@
-'use strict';
+
+function displayBookmarkForm() {
+  if (store.adding) {
+    $('#add-bookmark').html(`
+        <div class="bookmark open">
+            <form id="add-bookmark-form" name="add-bookmark-form">
+                <legend>${store.addBookmarkText}</legend>
+                <label for="title-input" id="title-label">Title:</label>
+                <input type="text" placeholder="enter title here" value="" name="title" required />
+                <label for="url-input" id="url-label">URL:</label>
+                <input type="text" placeholder="enter url here" value="" name="url" required />
+                <label for="description-input" id="description-label">Description:</label>
+                <textarea placeholder="enter description here" value="" name="desc" class="long-input" required />
+                <label for="select-ranking" id="select-ranking-label">Ranking:</label>
+                <select id="select-ranking" name="rating">
+                    <option value="5">5 stars</option>
+                    <option value="4">4 stars</option>
+                    <option value="3">3 stars</option>
+                    <option value="2">2 stars</option>
+                    <option value="1" selected>1 star</option>
+                </select>
+                <button type="submit" value="submit" name="submit">Submit</button>
+                <button type="button" value="clear" name="clear">Cancel</button>
+            </form>
+        </div>`);
+  }
+  else {
+    $('#add-bookmark').html(`<div class="bookmark unopen"><span>${store.addBookmarkText}</span></div>`);
+  }
+}
+
 
 const bookmarks = (function() {
 
@@ -32,12 +62,84 @@ const bookmarks = (function() {
 
   const expandItem = function(id) {
     store.expandItem(id);
+  };
+
+  function displayBookmarkItems() {
+    if (!store.adding) {
+      bookmarks.getItems();
+    }
   }
+
+  function eventListeners() {
+
+    $('#minimum-ranking').on('change', '#select-ranking', e => {
+      changeRankDisplay();
+      displayBookmarkItems();
+    });
+  
+    $('#add-bookmark').on('click', '.unopen', e=> {
+      if (!store.adding) {
+        store.adding = true;
+        $('#add-bookmark').empty();
+        $('#bookmarks-list').empty();
+        displayBookmarkForm();
+      }
+    });
+  
+    $('#add-bookmark').on('click', 'button', e=> {
+      if((event.target).value === 'clear') { 
+        console.log('clear button clicked');
+        store.adding = false;  
+        console.log(store.adding);
+        displayBookmarkForm();
+        displayBookmarkItems();
+      }
+    });
+  
+    $('#add-bookmark').on('submit', '#add-bookmark-form', e=> {
+      e.preventDefault();
+      let serializedData = $('#add-bookmark-form').serializeJson();
+      submitAddBookmarkForm(serializedData);
+    });
+    $('#bookmarks-list').on('click', 'li', e=> {
+      expandItem($(e.currentTarget).attr('id'));
+      // render();
+    });
+    $('#bookmarks-list').on('click','.edit-button', e=> {
+      console.log('edit button');
+      // render();
+    });
+    $('#bookmarks-list').on('click','.delete-button', function(e) {
+      let id = $(this).closest('li').attr('id');
+      deleteItem(id);
+      // render();
+    });
+  }
+
+  function render() {
+    displayBookmarkForm();
+    displayBookmarkItems();
+  }
+
+  
   return {
     submitAddBookmarkForm,
     changeRankDisplay,
     getItems,
     deleteItem,
-    expandItem
+    expandItem,
+
+    displayBookmarkItems,
+    eventListeners,
+    render,
   };
 })();
+
+$.fn.extend({
+  serializeJson: function() {
+    const formData = new FormData(this[0]);
+    const o = {};
+    formData.forEach((val,name) => o[name] = val);
+    return JSON.stringify(o);
+  }
+});

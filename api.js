@@ -1,4 +1,4 @@
-'use strict';
+
 
 // function callFetchAPI(method, id) {
 //   let url = `https://thinkful-list-api.herokuapp.com/leon/bookmarks/${id}`;

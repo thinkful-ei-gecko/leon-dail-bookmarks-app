@@ -16,9 +16,15 @@ const store = {
       displayData2 +=
         `<li id="${each['id']}">
             <div class="condensed-info">
-                <h3>${each['title']}</h3>
-                <div class="starranking">Rank: ${each['rating']}</div>
-                <button type="button" id="delete-button">Delete?</button>
+                <div class="left"></div>
+                <div class="center">
+                    <h3>${each['title']}</h3>
+                    <div class="starranking">Rank: ${each['rating']}</div>
+                </div>
+                <div class="right">
+                    <button type="button" class="delete-button" value="delete" name="delete"></button>
+                    <button type="edit" class="edit-button" value="edit" name="edit"></button>
+                </div>
             </div>
         </li>`;
     });
@@ -33,7 +39,7 @@ const store = {
 
   adding: false,
   rankDisplay: 1,
-  addBookmarkText: 'Add a bookmark',
+  addBookmarkText: 'add a bookmark',
 
   bookmarks: []
 };

@@ -1,8 +1,7 @@
 'use strict';
 
 function displayMinimumRankingSelector() {
-  if (!store.adding) {
-    $('#minimum-ranking').html(`
+  $('#minimum-ranking').html(`
         <label for="select-ranking" id="select-ranking-label">Only displaying items of rank:</label>
         <select id="select-ranking">
             <option value="5">5 stars</option>
@@ -11,10 +10,6 @@ function displayMinimumRankingSelector() {
             <option value="2">2 stars and above</option>
             <option value="1" selected>1 star and above(all)</option>
         </select>`);
-  }
-  else {
-    $('#form-ranking').empty();
-  }
 }
 
 function displayBookmarkForm() {
@@ -28,7 +23,7 @@ function displayBookmarkForm() {
                 <label for="url-input" id="url-label">URL:</label>
                 <input type="text" placeholder="enter url here" value="" name="url" required />
                 <label for="description-input" id="description-label">Description:</label>
-                <input type="text" placeholder="enter description here" value="" name="desc" required />
+                <textarea placeholder="enter description here" value="" name="desc" class="long-input" required />
                 <label for="select-ranking" id="select-ranking-label">Ranking:</label>
                 <select id="select-ranking" name="rating">
                     <option value="5">5 stars</option>
@@ -55,11 +50,6 @@ function displayBookmarkItems() {
 
 function eventListeners() {
 
-  $('#bookmarks-title').on('click', e=> {
-    console.log('header click');
-    render();
-  });
-
   $('#minimum-ranking').on('change', '#select-ranking', e => {
     bookmarks.changeRankDisplay();
     displayBookmarkItems();
@@ -79,7 +69,8 @@ function eventListeners() {
       console.log('clear button clicked');
       store.adding = false;  
       console.log(store.adding);
-      render();
+      displayBookmarkForm();
+      displayBookmarkItems();
     }
   });
 
@@ -93,11 +84,11 @@ function eventListeners() {
     //clicking an li
     // render();
   });
-  $('#bookmarks-list').on('click','#edit-button', e=> {
+  $('#bookmarks-list').on('click','.edit-button', e=> {
     //edit the data
     // render();
   });
-  $('#bookmarks-list').on('click','#delete-button', function(e) {
+  $('#bookmarks-list').on('click','.delete-button', function(e) {
     let id = $(this).closest('li').attr('id');
     bookmarks.deleteItem(id);
     // render();
@@ -106,13 +97,13 @@ function eventListeners() {
 
 function render() {
   console.log('rendering');
-  displayMinimumRankingSelector();
   displayBookmarkForm();
   displayBookmarkItems();
 }
 
 function ready () {
   eventListeners();
+  displayMinimumRankingSelector();
   render();
 }
 

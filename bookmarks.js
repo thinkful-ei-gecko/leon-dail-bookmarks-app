@@ -7,7 +7,6 @@ const bookmarks = (function() {
     console.log(`submission is ${submission}`);
     //send to API to add
     api.createItems(submission);
-    //render
   };
 
   const changeRankDisplay = function() {

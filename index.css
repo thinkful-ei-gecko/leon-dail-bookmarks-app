@@ -2,33 +2,51 @@
   color: black;
   font-family: 'Roboto', sans-serif;
   background-color: white;
+  box-sizing: border-box;
 }
 
-h1, option, span, label, h2, form { 
+
+h1, option, span, label, h2, form, textarea { 
   color: black;
   font-family: 'Roboto', sans-serif;
+}
+
+input, textarea { 
+  width: 250px;
 }
 
 header {
   position: fixed;
   top: 0;
   min-width: 100%;
+  z-index: 1;
+  background-color: #2fbfc4;
+}
+
+h1 span { 
+  color: white;
+  display: block;
+  background-color: transparent;
 }
 
 h1 { 
   color: white;
-  background-color: #2fbfc4;
+  background-image: url('tab-blue.png');
+  background-position: top left;
+  background-repeat: no-repeat;
+  background-size: 50px;
+  background-color: inherit;
   font-size: 40px;
   font-weight: bold;
   text-align: center;
   padding: 20px 0px;
-  cursor: pointer;
+  margin: 0px 20px;
 }
 
 #minimum-ranking {
   text-align: center;
   line-height: 20px;
-  margin: 10px 0px;
+  padding: 10px 0px;
 }
 
 label, input, select {
@@ -36,16 +54,26 @@ label, input, select {
   margin: 0 auto;
 }
 
+label {
+  margin-top: 10px;
+}
+.long-input {
+  height: 60px;
+}
+
 
 .bookmark {
   color: black;
-  font-weight: bold;
   font-size: 20px;
   text-align: center;
   padding: 15px 0px;
   border-top: 4px solid black;
   border-bottom: 4px solid black;
   min-width: 100%;
+  background-image: url('tab-blue.png');
+  background-size: 35px;
+  background-repeat: no-repeat;
+  background-position-x: 25px;
 }
 
 .unopen {
@@ -58,7 +86,7 @@ label, input, select {
 }
 
 span, form, label, legend, div {
-  background-color: inherit;
+  background-color: transparent;
 }
 
 .unopen:hover {
@@ -68,13 +96,17 @@ span, form, label, legend, div {
 
 html {
   min-height: 100%;
-  background-image: linear-gradient(white,#e2fcff);
+  background-image: linear-gradient(white,white,#e2fcff);
 }
 
 main {
-  position: fixed;
-  top: 200px;
+  position: relative;
+  top: 270px;
   width: 100%;
+}
+
+ul {
+  background: #e2fcff;
 }
 
 li {
@@ -83,14 +115,82 @@ li {
   border-top: 1px solid black;
   border-bottom: 1px solid black;
   padding: 5px 5px 5px 0px;
-  text-align: center;
   font-weight: bold;
   font-size: 20px;
 }
 
+li:hover {
+  cursor: pointer;
+}
+
+li:hover .left {
+  background-image: url('tab-blue.png');
+}
+
+h3 {
+  margin-top: 3px;
+  margin-bottom: 10px;
+}
 .condensed-info {
+  width: 99%;
   display: flex;
   flex: 1;
   flex-direction: row;
-  align-items: space-around;
+}
+
+.columns {
+  display: flex;
+  flex: 1;
+}
+
+.left {
+  width: 35px;
+  background-image: url('tab-white.png');
+  background-repeat: no-repeat;
+  background-position-x: 5px;
+  background-position-y: 11px;
+  transform: rotate(-90deg);
+  background-size: 30px;
+  order: 1;
+}
+
+.center {
+  flex: 1;
+  order: 2;
+  text-align: center;
+}
+
+.right {
+  order: 3;
+  width: 50px;
+  text-align: right;
+}
+
+.delete-button {
+  background-image: url('delete.png');
+  background-size: 25px;
+  width: 25px;
+  height: 25px;
+  outline: none;
+  cursor: pointer;
+  border: none;
+}
+
+.delete-button:hover {
+  background-image: url('delete-hover.png');
+}
+
+.edit-button {
+  background-image: url('edit.png');
+  background-size: 25px;
+  width: 25px;
+  height: 25px;
+  outline: none;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+}
+
+.edit-button:hover {
+  background-image: url('edit-blue.png');
 }

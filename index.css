@@ -194,3 +194,27 @@ h3 {
 .edit-button:hover {
   background-image: url('edit-blue.png');
 }
+
+.expanded {
+  font-size: 15px;
+  font-weight: normal;
+  text-align: center;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  line-height: 24px;
+}
+
+.expanded .url a {
+  color: #0c90a4;
+  font-weight: bold;
+  text-decoration-style: dotted;
+} 
+
+.expanded .url a:hover {
+  text-decoration: underline;
+  text-decoration-style: line; 
+}
+
+.starranking img {
+  width: 40%;
+}

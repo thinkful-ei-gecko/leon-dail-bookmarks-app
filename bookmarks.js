@@ -28,13 +28,16 @@ const bookmarks = (function() {
 
   const deleteItem = function(id) {
     api.deleteItem(id);
-
   };
 
+  const expandItem = function(id) {
+    store.expandItem(id);
+  }
   return {
     submitAddBookmarkForm,
     changeRankDisplay,
     getItems,
-    deleteItem
+    deleteItem,
+    expandItem
   };
 })();

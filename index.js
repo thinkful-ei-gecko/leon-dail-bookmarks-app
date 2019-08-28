@@ -78,14 +78,13 @@ function eventListeners() {
     e.preventDefault();
     let serializedData = $('#add-bookmark-form').serializeJson();
     bookmarks.submitAddBookmarkForm(serializedData);
-    // render();
   });
-  $('#bookmarks-list li').on('click', e=> {
-    //clicking an li
+  $('#bookmarks-list').on('click', 'li', e=> {
+    bookmarks.expandItem($(e.currentTarget).attr('id'));
     // render();
   });
   $('#bookmarks-list').on('click','.edit-button', e=> {
-    //edit the data
+    console.log('edit button');
     // render();
   });
   $('#bookmarks-list').on('click','.delete-button', function(e) {

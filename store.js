@@ -24,7 +24,7 @@ const store = {
     let obj = store.bookmarks.find(item => item['id'] === id);
     if (obj['expanded'] === true) { obj['expanded'] = false; }
     else { obj['expanded'] = true;}
-    store.getItems();
+    bookmarks.printResults();
   },
 
   adding: false,

@@ -218,3 +218,8 @@ h3 {
 .starranking img {
   width: 40%;
 }
+
+.error {
+  font-size: 26px;
+  font-weight: bold;
+}

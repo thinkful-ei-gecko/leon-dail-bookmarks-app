@@ -1,10 +1,8 @@
 
 
-// function callFetchAPI(method, id) {
+// function callFetchAPI(settings, id) {
 //   let url = `https://thinkful-list-api.herokuapp.com/leon/bookmarks/${id}`;
-//   fetch(url, {
-//     method: `${method}`
-//   })
+//   fetch(url, settings)
 //     .then(res => {
 //       if (res.ok) {
 //         return res.json();
@@ -25,7 +23,6 @@ const api = (function() {
 
 
   const getItems = function() {
-    //call to API and stringify items
     return fetch('https://thinkful-list-api.herokuapp.com/leon/bookmarks');
   };
 
@@ -43,6 +40,7 @@ const api = (function() {
         throw new Error('Had an error!');
       })
       .then (resJson => store.addItem(resJson))
+      .catch(err => $('.error').text(`${err}`));
   };
 
   const deleteItem = function(id) {
@@ -57,7 +55,7 @@ const api = (function() {
         throw new Error('Had an error!');
       })
       .then (resJson => store.deleteItem(resJson))
-      .catch(err => console.log(`we had the error ${err}`));
+      .catch(err => $('.error').text(`${err}`));
   };
 
   return {

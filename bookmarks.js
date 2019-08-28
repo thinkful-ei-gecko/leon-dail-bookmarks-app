@@ -30,11 +30,6 @@ const bookmarks = (function() {
     }
   };
 
-  const displayBookmarkItems = function() {
-    if (!store.adding) {
-      getItems();
-    }
-  };
 
   const printResults = function() {
     let displayData = store.bookmarks.filter(each => each['rating'] >= store.rankDisplay);
@@ -64,6 +59,7 @@ const bookmarks = (function() {
       }
       displayData2 += '</li>';
     });
+    console.log(displayData2);
     $('#bookmarks-list').html(displayData2);
   };
 
@@ -77,21 +73,13 @@ const bookmarks = (function() {
       })
       .then(dataJson => store.getItems(dataJson))
       .then(dataJson => printResults())
-      .catch(err => console.error(`There was an error: ${err}`));
+      .catch(err => $('.error').text(`Error: ${err}`));
   };
 
-  const submitAddBookmarkForm = function(submission) {
-    console.log(`submission is ${submission}`);
-    //send to API to add
-    api.createItems(submission);
-  };
-
-  const deleteItem = function(id) {
-    api.deleteItem(id);
-  };
-
-  const expandItem = function(id) {
-    store.expandItem(id);
+  const displayBookmarkItems = function() {
+    if (!store.adding) {
+      getItems();
+    }
   };
 
   function eventListeners() {
@@ -102,38 +90,35 @@ const bookmarks = (function() {
     });
   
     $('#add-bookmark').on('click', '.unopen', e=> {
-      if (!store.adding) {
-        store.adding = true;
-        $('#add-bookmark').empty();
-        $('#bookmarks-list').empty();
-        displayBookmarkForm();
-      }
+      store.adding = true;
+      $('#bookmarks-list').empty();
+      displayBookmarkForm();
     });
   
     $('#add-bookmark').on('click', 'button', e=> {
       if((event.target).value === 'clear') { 
-        console.log('clear button clicked');
         store.adding = false;  
-        console.log(store.adding);
-        displayBookmarkForm();
-        displayBookmarkItems();
+        render();
       }
     });
   
     $('#add-bookmark').on('submit', '#add-bookmark-form', e=> {
       e.preventDefault();
       let serializedData = $('#add-bookmark-form').serializeJson();
-      submitAddBookmarkForm(serializedData);
+      api.createItems(serializedData);
     });
+
     $('#bookmarks-list').on('click', 'li', e=> {
-      expandItem($(e.currentTarget).attr('id'));
+      store.expandItem($(e.currentTarget).attr('id'));
     });
+
     $('#bookmarks-list').on('click','.edit-button', e=> {
       console.log('edit button functionality coming soon');
     });
+
     $('#bookmarks-list').on('click','.delete-button', function(e) {
       let id = $(this).closest('li').attr('id');
-      deleteItem(id);
+      api.deleteItem(id);
     });
   }
 
@@ -144,11 +129,9 @@ const bookmarks = (function() {
 
   
   return {
-    submitAddBookmarkForm,
     getItems,
-    deleteItem,
-    expandItem,
 
+    printResults,
     displayBookmarkItems,
     eventListeners,
     render,

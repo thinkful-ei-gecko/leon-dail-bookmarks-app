@@ -1,5 +1,7 @@
 A Bookmark app to help you keep track of your favorite bookmarks. Uses Thinkful's bookmark API.
 
+https://github.com/thinkful-ei-gecko/leon-dail-bookmarks-app
+
 User Stories
 
 As a user:

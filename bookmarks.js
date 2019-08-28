@@ -1,47 +1,70 @@
-
-function displayBookmarkForm() {
-  if (store.adding) {
-    $('#add-bookmark').html(`
-        <div class="bookmark open">
-            <form id="add-bookmark-form" name="add-bookmark-form">
-                <legend>${store.addBookmarkText}</legend>
-                <label for="title-input" id="title-label">Title:</label>
-                <input type="text" placeholder="enter title here" value="" name="title" required />
-                <label for="url-input" id="url-label">URL:</label>
-                <input type="text" placeholder="enter url here" value="" name="url" required />
-                <label for="description-input" id="description-label">Description:</label>
-                <textarea placeholder="enter description here" value="" name="desc" class="long-input" required />
-                <label for="select-ranking" id="select-ranking-label">Ranking:</label>
-                <select id="select-ranking" name="rating">
-                    <option value="5">5 stars</option>
-                    <option value="4">4 stars</option>
-                    <option value="3">3 stars</option>
-                    <option value="2">2 stars</option>
-                    <option value="1" selected>1 star</option>
-                </select>
-                <button type="submit" value="submit" name="submit">Submit</button>
-                <button type="button" value="clear" name="clear">Cancel</button>
-            </form>
-        </div>`);
-  }
-  else {
-    $('#add-bookmark').html(`<div class="bookmark unopen"><span>${store.addBookmarkText}</span></div>`);
-  }
-}
-
-
 const bookmarks = (function() {
-
-
-  const submitAddBookmarkForm = function(submission) {
-    console.log(`submission is ${submission}`);
-    //send to API to add
-    api.createItems(submission);
+  
+  const displayBookmarkForm = function() {
+    if (store.adding) {
+      $('#add-bookmark').html(`
+          <div class="bookmark open">
+              <form id="add-bookmark-form" name="add-bookmark-form">
+                  <legend>${store.addBookmarkText}</legend>
+                  <label for="title-input" id="title-label">Title:</label>
+                  <input type="text" placeholder="enter title here" value="" name="title" required />
+                  <label for="url-input" id="url-label">URL:</label>
+                  <input type="text" placeholder="enter url here" value="" name="url" required />
+                  <label for="description-input" id="description-label">Description:</label>
+                  <textarea placeholder="enter description here" value="" name="desc" class="long-input" required />
+                  <label for="select-ranking" id="select-ranking-label">Ranking:</label>
+                  <select id="select-ranking" name="rating">
+                      <option value="5">5 stars</option>
+                      <option value="4">4 stars</option>
+                      <option value="3">3 stars</option>
+                      <option value="2">2 stars</option>
+                      <option value="1" selected>1 star</option>
+                  </select>
+                  <button type="submit" value="submit" name="submit">Submit</button>
+                  <button type="button" value="clear" name="clear">Cancel</button>
+              </form>
+          </div>`);
+    }
+    else {
+      $('#add-bookmark').html(`<div class="bookmark unopen"><span>${store.addBookmarkText}</span></div>`);
+    }
   };
 
-  const changeRankDisplay = function() {
-    store.rankDisplay = $('#minimum-ranking').find('#select-ranking').val();
-    displayBookmarkItems();
+  const displayBookmarkItems = function() {
+    if (!store.adding) {
+      getItems();
+    }
+  };
+
+  const printResults = function() {
+    let displayData = store.bookmarks.filter(each => each['rating'] >= store.rankDisplay);
+    let displayData2 = '';
+    displayData.forEach(each => {
+      displayData2 +=
+        `<li id="${each['id']}">
+            <div class="condensed-info">
+                <div class="left"></div>
+                <div class="center">
+                    <h3>${each['title']}</h3>
+                    <div class="starranking"><img src="${each['rating']}star.png" alt="${each['rating']} stars" /></div>
+                </div>
+                <div class="right">
+                    <button type="button" class="delete-button" value="delete" name="delete"></button>
+                    <button type="edit" class="edit-button" value="edit" name="edit"></button>
+                </div>
+            </div>
+        `;
+      if (each['expanded'] === true) {
+        displayData2 +=
+          `<div class="expanded">
+              <p class="description">${each['desc']}</p>
+              <p class="url"><a href="${each['url']}">${each['url']}</a></p>
+          </div>
+          `;
+      }
+      displayData2 += '</li>';
+    });
+    $('#bookmarks-list').html(displayData2);
   };
 
   const getItems = function() {
@@ -53,7 +76,14 @@ const bookmarks = (function() {
         throw new Error('Had an error');
       })
       .then(dataJson => store.getItems(dataJson))
+      .then(dataJson => printResults())
       .catch(err => console.error(`There was an error: ${err}`));
+  };
+
+  const submitAddBookmarkForm = function(submission) {
+    console.log(`submission is ${submission}`);
+    //send to API to add
+    api.createItems(submission);
   };
 
   const deleteItem = function(id) {
@@ -64,16 +94,10 @@ const bookmarks = (function() {
     store.expandItem(id);
   };
 
-  function displayBookmarkItems() {
-    if (!store.adding) {
-      bookmarks.getItems();
-    }
-  }
-
   function eventListeners() {
 
     $('#minimum-ranking').on('change', '#select-ranking', e => {
-      changeRankDisplay();
+      store.rankDisplay = $('#minimum-ranking').find('#select-ranking').val();
       displayBookmarkItems();
     });
   
@@ -103,16 +127,13 @@ const bookmarks = (function() {
     });
     $('#bookmarks-list').on('click', 'li', e=> {
       expandItem($(e.currentTarget).attr('id'));
-      // render();
     });
     $('#bookmarks-list').on('click','.edit-button', e=> {
-      console.log('edit button');
-      // render();
+      console.log('edit button functionality coming soon');
     });
     $('#bookmarks-list').on('click','.delete-button', function(e) {
       let id = $(this).closest('li').attr('id');
       deleteItem(id);
-      // render();
     });
   }
 
@@ -124,7 +145,6 @@ const bookmarks = (function() {
   
   return {
     submitAddBookmarkForm,
-    changeRankDisplay,
     getItems,
     deleteItem,
     expandItem,

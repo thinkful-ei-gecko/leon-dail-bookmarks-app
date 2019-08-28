@@ -21,7 +21,7 @@ const store = {
                 <div class="left"></div>
                 <div class="center">
                     <h3>${each['title']}</h3>
-                    <div class="starranking"><img src="/${each['rating']}star.png" alt="${each['rating']} stars" /></div>
+                    <div class="starranking"><img src="${each['rating']}star.png" alt="${each['rating']} stars" /></div>
                 </div>
                 <div class="right">
                     <button type="button" class="delete-button" value="delete" name="delete"></button>

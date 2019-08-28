@@ -1,29 +1,47 @@
 const bookmarks = (function() {
   
-  const displayBookmarkForm = function() {
+  const displayBookmarkForm = function(obj) {
+    let data = {title: '', url: '', desc: '', rating: ''};
+    if (obj) { data = obj; }
     if (store.adding) {
-      $('#add-bookmark').html(`
+      let formHtml = '';
+      formHtml += `
           <div class="bookmark open">
               <form id="add-bookmark-form" name="add-bookmark-form">
-                  <legend>${store.addBookmarkText}</legend>
+      `;
+      if (store.edit) {
+        formHtml+= `<legend>${store.editBookmarkText}</legend>`;
+      }
+      else {
+        formHtml += `<legend>${store.addBookmarkText}</legend>`;
+      }
+      formHtml+= `
                   <label for="title-input" id="title-label">Title:</label>
-                  <input type="text" placeholder="enter title here" value="" name="title" required />
+                  <input type="text" placeholder="enter title here" value="${data['title']}" name="title" required />
                   <label for="url-input" id="url-label">URL:</label>
-                  <input type="text" placeholder="enter url here" value="" name="url" required />
+                  <input type="text" placeholder="enter url here" value="${data['url']}" name="url" required />
                   <label for="description-input" id="description-label">Description:</label>
-                  <textarea placeholder="enter description here" value="" name="desc" class="long-input" required />
+                  <textarea placeholder="enter description here" name="desc" class="long-input" required>${data['desc']}</textarea>
                   <label for="select-ranking" id="select-ranking-label">Ranking:</label>
                   <select id="select-ranking" name="rating">
-                      <option value="5">5 stars</option>
-                      <option value="4">4 stars</option>
-                      <option value="3">3 stars</option>
-                      <option value="2">2 stars</option>
-                      <option value="1" selected>1 star</option>
+      `;
+      let i = 5;
+      while (i>=1) {
+        if (i === data['rating']) {
+          formHtml += i === 1 ? `<option value="${i}" selected>${i} star</option>` : `<option value="${i}" selected>${i} stars</option>`;
+        }
+        else {
+          formHtml += i === 1 ? `<option value="${i}">${i} star</option>` : `<option value="${i}">${i} stars</option>`;
+        }
+        i--;
+      }
+      formHtml+= `
                   </select>
                   <button type="submit" value="submit" name="submit">Submit</button>
                   <button type="button" value="clear" name="clear">Cancel</button>
               </form>
-          </div>`);
+          </div>`;
+      $('#add-bookmark').html(formHtml);
     }
     else {
       $('#add-bookmark').html(`<div class="bookmark unopen"><span>${store.addBookmarkText}</span></div>`);
@@ -59,21 +77,23 @@ const bookmarks = (function() {
       }
       displayData2 += '</li>';
     });
-    console.log(displayData2);
     $('#bookmarks-list').html(displayData2);
+  };
+
+  const displayError = function(err) {
+    $('.error').text(`${err.message}. Click this text to make it disappear.`);
   };
 
   const getItems = function() {
     api.getItems()
-      .then(res => {
-        if (res.ok) {
-          return res.json();
-        }
-        throw new Error('Had an error');
-      })
       .then(dataJson => store.getItems(dataJson))
-      .then(dataJson => printResults())
-      .catch(err => $('.error').text(`Error: ${err}`));
+      .then(dataJson => {
+        store.adding = false;
+        store.edit = false;
+        displayBookmarkForm();
+        printResults();
+      })
+      .catch(err => displayError(err));
   };
 
   const displayBookmarkItems = function() {
@@ -105,20 +125,46 @@ const bookmarks = (function() {
     $('#add-bookmark').on('submit', '#add-bookmark-form', e=> {
       e.preventDefault();
       let serializedData = $('#add-bookmark-form').serializeJson();
-      api.createItems(serializedData);
+      let method = '';
+      let id = '';
+      if (store.edit) { method = 'PATCH'; id = store.edit;}
+      else { method = 'POST'; }
+      api.createItems(serializedData, method, id)
+        .then(dataJson => store.addItem(dataJson,method, id, JSON.parse(serializedData)))
+        .then(dataJson => {
+          store.adding = false;
+          store.edit = false;
+          displayBookmarkForm();
+          printResults();
+        })
+        .catch(err => displayError(err));
     });
 
     $('#bookmarks-list').on('click', 'li', e=> {
-      store.expandItem($(e.currentTarget).attr('id'));
+      if (!$(e.target).is('button')) {
+        store.expandItem($(e.currentTarget).attr('id'));
+      }
     });
 
     $('#bookmarks-list').on('click','.edit-button', e=> {
-      console.log('edit button functionality coming soon');
+      let id = $(e.currentTarget).closest('li').attr('id');
+      let obj = store.bookmarks.find(item => item['id'] === id);
+      store.adding = true;
+      store.edit = id;
+      $('#bookmarks-list').empty();
+      displayBookmarkForm(obj);
     });
 
     $('#bookmarks-list').on('click','.delete-button', function(e) {
       let id = $(this).closest('li').attr('id');
-      api.deleteItem(id);
+      api.deleteItem(id) 
+        .then(dataJson => store.deleteItem(dataJson))
+        .then(dataJson => printResults())
+        .catch(err => displayError(err));
+    });
+
+    $('.error').on('click', e=> {
+      $('.error').empty();
     });
   }
 

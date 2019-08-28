@@ -2,10 +2,16 @@
 
 const store = {
 
-  addItem : function(data) {
-    store.bookmarks.push(data);
+  addItem : function(data, method, id, newPatchData) {
+    if (method === 'POST') {
+      store.bookmarks.push(data);
+    }
+    else {
+      let obj = store.bookmarks.find(item => item['id'] === id);
+      Object.assign(obj,newPatchData);
+    }
     store.adding = false;
-    bookmarks.render();
+    store.edit = false;
   },
 
   getItems: function(dataJson) {
@@ -27,9 +33,12 @@ const store = {
     bookmarks.printResults();
   },
 
+
   adding: false,
+  edit: false,
   rankDisplay: 1,
   addBookmarkText: 'add a bookmark',
+  editBookmarkText: 'edit a bookmark',
 
   bookmarks: []
 };

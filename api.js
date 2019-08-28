@@ -1,65 +1,51 @@
 
-
-// function callFetchAPI(settings, id) {
-//   let url = `https://thinkful-list-api.herokuapp.com/leon/bookmarks/${id}`;
-//   fetch(url, settings)
-//     .then(res => {
-//       if (res.ok) {
-//         return res.json();
-//       }
-//       throw new Error ('Res ok error');
-//     })
-//     .then(resJson => {
-//       console.log(JSON.stringify(resJson));
-//     })
-//     .catch(err => {
-//       console.error(`We found an error: ${err}`);
-//     });
-// }
-
 const api = (function() {
+
+  
+
+  function callFetchAPI(url, settings) {
+    let error ='';
+    return fetch(url, settings)
+      .then(res => {
+        if (!res.ok) {
+          error = { code: res.status };
+        }
+        return res.json();
+      })
+      .then (resJson => { 
+        if (error) { 
+          error.message = resJson.message;
+          return Promise.reject(error);
+        }
+        return resJson;
+      });
+  }
 
   const BASE_URL = 'https://thinkful-list-api.herokuapp.com/leon/bookmarks';
 
-
   const getItems = function() {
-    return fetch('https://thinkful-list-api.herokuapp.com/leon/bookmarks');
+    return callFetchAPI(BASE_URL);
   };
 
-  const createItems = function(data) {
-    //call to API
-    fetch (BASE_URL, {
-      method: 'POST',
+  const createItems = function(data, methods, id) {
+    let settings = {
+      method: methods,
       headers: new Headers({'Content-Type' : 'application/json'}),
       body : data
-    })
-      .then(res => {
-        if (res.ok) {
-          return res.json();
-        }
-        throw new Error('Had an error!');
-      })
-      .then (resJson => store.addItem(resJson))
-      .catch(err => $('.error').text(`${err}`));
+    };
+    return callFetchAPI(methods === 'POST' ? BASE_URL : `${BASE_URL}/${id}`, settings);
   };
 
   const deleteItem = function(id) {
-    fetch (`${BASE_URL}/${id}`, {
+    let settings = {
       method: 'DELETE',
       headers: new Headers({'Content-Type' : 'application/json'})
-    })
-      .then(res => {
-        if (res.ok) {
-          return res.json();
-        }
-        throw new Error('Had an error!');
-      })
-      .then (resJson => store.deleteItem(resJson))
-      .catch(err => $('.error').text(`${err}`));
+    };
+    return callFetchAPI(`${BASE_URL}/${id}`, settings);
+
   };
 
   return {
-    BASE_URL,
 
     getItems,
     createItems,

@@ -220,6 +220,7 @@ h3 {
 }
 
 .error {
-  font-size: 26px;
+  font-size: 18px;
   font-weight: bold;
+  background-color: lightcoral;
 }

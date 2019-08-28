@@ -6,7 +6,6 @@ const store = {
     store.bookmarks.push(data);
     store.adding = false;
     render();
-    //render();
   },
 
   getItems: function(dataJson) {
@@ -16,9 +15,11 @@ const store = {
     displayData.forEach(each => {
       displayData2 +=
         `<li id="${each['id']}">
-            <h3>${each['title']}</h3>
-            <div class="starranking">Rank: ${each['rating']}</div>
-            <button type="button" id="delete-button">Delete?</button>
+            <div class="condensed-info">
+                <h3>${each['title']}</h3>
+                <div class="starranking">Rank: ${each['rating']}</div>
+                <button type="button" id="delete-button">Delete?</button>
+            </div>
         </li>`;
     });
     $('#bookmarks-list').html(displayData2);

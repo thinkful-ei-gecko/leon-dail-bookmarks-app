@@ -36,8 +36,8 @@ label, input, select {
   margin: 0 auto;
 }
 
-#add-bookmark {
-  background-color: #e2fcff;
+
+.bookmark {
   color: black;
   font-weight: bold;
   font-size: 20px;
@@ -45,15 +45,23 @@ label, input, select {
   padding: 15px 0px;
   border-top: 4px solid black;
   border-bottom: 4px solid black;
-  cursor: default;
   min-width: 100%;
 }
 
-span, form, label, legend {
+.unopen {
+  background-color: #e2fcff;
+  cursor: pointer;
+}
+.open, form {
+  background-color: #2fbfc4;
+  cursor: default;
+}
+
+span, form, label, legend, div {
   background-color: inherit;
 }
 
-#add-bookmark:hover, #add-bookmark span:hover {
+.unopen:hover {
   background-color: #2fbfc4;
   cursor: pointer;
 }
@@ -61,13 +69,14 @@ span, form, label, legend {
 html {
   min-height: 100%;
   background-image: linear-gradient(white,#e2fcff);
-
 }
 
 main {
   position: fixed;
   top: 200px;
+  width: 100%;
 }
+
 li {
   margin-top: 10px;
   background-color: white;
@@ -75,4 +84,13 @@ li {
   border-bottom: 1px solid black;
   padding: 5px 5px 5px 0px;
   text-align: center;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.condensed-info {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  align-items: space-around;
 }

@@ -18,31 +18,32 @@ function displayMinimumRankingSelector() {
 }
 
 function displayBookmarkForm() {
-  if (store.adding) {
-    console.log('its true');
+  if (store.adding === true) {
     $('#add-bookmark').html(`
-        <form id="add-bookmark-form" name="add-bookmark-form">
-            <legend>${store.addBookmarkText}</legend>
-            <label for="title-input" id="title-label">Title:</label>
-            <input type="text" placeholder="enter title here" value="" name="title" required />
-            <label for="url-input" id="url-label">URL:</label>
-            <input type="text" placeholder="enter url here" value="" name="url" required />
-            <label for="description-input" id="description-label">Description:</label>
-            <input type="text" placeholder="enter description here" value="" name="desc" required />
-            <label for="select-ranking" id="select-ranking-label">Ranking:</label>
-            <select id="select-ranking" name="rating">
-                <option value="5">5 stars</option>
-                <option value="4">4 stars</option>
-                <option value="3">3 stars</option>
-                <option value="2">2 stars</option>
-                <option value="1" selected>1 star</option>
-            </select>
-            <button type="submit" value="submit" name="submit">Submit</button>
-            <button type="button" value="clear" name="clear">Cancel</button>
-        </form>`);
+        <div class="bookmark open">
+            <form id="add-bookmark-form" name="add-bookmark-form">
+                <legend>${store.addBookmarkText}</legend>
+                <label for="title-input" id="title-label">Title:</label>
+                <input type="text" placeholder="enter title here" value="" name="title" required />
+                <label for="url-input" id="url-label">URL:</label>
+                <input type="text" placeholder="enter url here" value="" name="url" required />
+                <label for="description-input" id="description-label">Description:</label>
+                <input type="text" placeholder="enter description here" value="" name="desc" required />
+                <label for="select-ranking" id="select-ranking-label">Ranking:</label>
+                <select id="select-ranking" name="rating">
+                    <option value="5">5 stars</option>
+                    <option value="4">4 stars</option>
+                    <option value="3">3 stars</option>
+                    <option value="2">2 stars</option>
+                    <option value="1" selected>1 star</option>
+                </select>
+                <button type="submit" value="submit" name="submit">Submit</button>
+                <button type="button" value="clear" name="clear">Cancel</button>
+            </form>
+        </div>`);
   }
   else {
-    $('#add-bookmark').html(`<span>${store.addBookmarkText}</span>`);
+    $('#add-bookmark').html(`<div class="bookmark unopen"><span>${store.addBookmarkText}</span></div>`);
   }
 }
 
@@ -64,7 +65,7 @@ function eventListeners() {
     displayBookmarkItems();
   });
 
-  $('#add-bookmark').on('click', e=> {
+  $('#add-bookmark').on('click', '.unopen', e=> {
     if (!store.adding) {
       store.adding = true;
       $('#add-bookmark').empty();
@@ -75,6 +76,7 @@ function eventListeners() {
 
   $('#add-bookmark').on('click', 'button', e=> {
     if((event.target).value === 'clear') { 
+      console.log('clear button clicked');
       store.adding = false;  
       console.log(store.adding);
       render();
